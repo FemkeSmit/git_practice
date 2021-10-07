@@ -9,5 +9,6 @@ paretoscaling <- function(file){
   sq_rt_st_dev_columns <- sqrt(st_dev_columns) #calculating the sqare root of the sd of each column
   scaled_file <- sweep(file, 2, means_columns, '-') #subtracting the mean of each column from all the values in that column 
   scaled_file <- sweep(scaled_file, 2, sq_rt_st_dev_columns, '/') #dividing the mean-centered values by the sqrt
-  return(scaled_file)
+  scaled_sqrts <- list(sq_rt_st_dev_columns, means_columns, scaled_file)   #list with scaled file, means, square roots for output
+  return(scaled_sqrts)
 }
