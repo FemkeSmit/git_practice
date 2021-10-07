@@ -9,7 +9,7 @@ data <- read.delim("Data_tocheck.txt",header = FALSE)
 dat <- data
 cv_one <- 5
 cv_two <- 10
-scaling <- "autoscaling"
+scaling <- "pareto"
 #cross_validate <- function(dat,cv_one,scaling){
 ## dat = data, cv_one = number of outer loops, cv_two = number of inner loops, 
 ## scaling = scaling functions from: 'autoscaling','mean_center','pareto'
@@ -45,17 +45,20 @@ for (i in 1:length(trainIndex)){
     }
     if (scaling == "mean_center"){
       scaled <- center_sweep(trainSet2)
-      testSet2Scaled <- center_sweep(testSet2)
-      testSetScaled <- center_sweep(trainSet2)
-
+      testSet2Scaled <- sweep(testSet2,2,scaled[[2]],'-')
+      
+      testSetScaled <- sweep(testSet,2,scaled[[2]],'-')
     }
     if (scaling == "pareto"){
       scaled <- paretoscaling(trainSet2)
-      testSet2Scaled <- paretoscaling(testSet2)
-      testSetScaled <- paretoscaling(trainSet2)
+      testSet2Scaled <- sweep(testSet2,2,scaled[[2]],'-')
+      testSet2Scaled <- sweep(testSet2Scaled,2,scaled[[1]],'/')
+      
+      testSetScaled <- sweep(testSet,2,scaled[[2]],'-')
+      testSetScaled <- sweep(testSetScaled,2,scaled[[1]],'/')
     }
     #scaling training set
-    trainSet2Scaled <- scaled[[1]]
+    trainSet2Scaled <- scaled[[3]]
 
     #THIS IS WHERE TRAINING AND INNER CROSS VALIDATION WOULD HAPPEN
   
